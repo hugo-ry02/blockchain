@@ -1,0 +1,15 @@
+# Environnement virtuel Python
+.venv/
+venv/
+env/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archives et fichiers système
+*.zip
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer — {{ node_id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=5">
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Topbar -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="logo-icon">⛓️</div>
+                <span class="brand-name">Blockchain Explorer</span>
+                <span class="node-tag" id="node-id">{{ node_id }}</span>
+                <span class="lan-tag" title="Adresse réseau local pour connecter un autre PC">{{ lan_url }}</span>
+            </div>
+            <div class="nav-actions">
+                <div id="chain-status-badge" class="status-chip valid">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Intègre</span>
+                </div>
+                <button id="refresh-btn" class="icon-btn" title="Actualiser">↻</button>
+            </div>
+        </header>
+
+        <!-- Notification -->
+        <div id="toast-banner" class="toast hidden"></div>
+
+        <!-- KPI Stats -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Hauteur</span>
+                <strong class="stat-value" id="chain-length">0</strong>
+                <span class="stat-sub">blocs validés</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Mempool</span>
+                <strong class="stat-value" id="pending-count">0</strong>
+                <span class="stat-sub">en attente</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Consensus</span>
+                <strong class="stat-value mono">PoW · {{ "0" * difficulty }}</strong>
+                <span class="stat-sub" id="last-mine-info">SHA-256</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Soldes actifs</span>
+                <div id="balances-list" class="balances-pills"></div>
+            </div>
+        </section>
+
+        <!-- Control Panels -->
+        <section class="workspace-grid">
+            <!-- Nouvelle Transaction -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-icon">💸</span>
+                    <h3>Transaction P2P</h3>
+                </div>
+                <form id="tx-form" class="form-body">
+                    <div class="input-row">
+                        <div class="field">
+                            <label for="sender">Émetteur (Réseau)</label>
+                            <select id="sender" required>
+                                <option value="{{ node_id }}">{{ node_id }}</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="recipient">Destinataire (Réseau)</label>
+                            <select id="recipient" required></select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="amount">Montant</label>
+                        <input type="number" id="amount" step="0.01" min="0.01" placeholder="10.00" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer sur le réseau</button>
+                </form>
+            </div>
+
+            <!-- Mempool & Minage -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-icon">⛏️</span>
+                    <h3>Mempool &amp; Minage</h3>
+                </div>
+                <div class="mempool-container">
+                    <ul id="pending-list" class="tx-queue"></ul>
+                </div>
+                <label class="toggle-row">
+                    <input type="checkbox" id="broadcast-mine" checked>
+                    <span>Diffuser le bloc miné aux autres PC</span>
+                </label>
+                <button id="mine-btn" class="btn btn-mine">
+                    <span>Miner un bloc (+1.00 {{ node_id }})</span>
+                </button>
+            </div>
+
+            <!-- Réseau & Sécurité -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-icon">🌐</span>
+                    <h3>Réseau (<span id="peers-count">0</span> pairs) &amp; Audit</h3>
+                </div>
+                <form id="node-form" class="peer-input-group">
+                    <input type="text" id="peer-url" placeholder="http://192.168.1.x:5000" required>
+                    <button type="submit" class="btn btn-secondary">Connecter</button>
+                </form>
+                <div id="peers-list" class="peers-chips"></div>
+                <button id="resolve-btn" class="btn btn-outline">Synchroniser (Résoudre conflits)</button>
+
+                <div class="security-toolbar">
+                    <button id="tamper-btn" class="chip-btn danger">Falsifier un bloc</button>
+                    <button id="bad-consensus-btn" class="chip-btn warning">Bloc PoW invalide</button>
+                    <button id="restore-btn" class="chip-btn neutral">Restaurer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visualisation de la chaîne -->
+        <section class="explorer-section">
+            <div class="explorer-header">
+                <h3>Registre des Blocs</h3>
+                <span id="validation-detail" class="validation-note"></span>
+            </div>
+            <div id="chain-container" class="chain-track"></div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}?v=5"></script>
+</body>
+</html>
