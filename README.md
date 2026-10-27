@@ -1,6 +1,6 @@
 # TP — Blockchain de Zéro (Master 1 — ESGI)
 
-**Auteur :** Hugo Rayaume  
+**Groupe :** Hugo Rayaume, Enzo Ravignon, Louis Baudat  
 **Cours :** Blockchain — Master 1 ESGI (Joffrey Hérard)
 
 Implémentation complète en Python d'une **blockchain décentralisée** dotée d'un algorithme de consensus **Proof of Work (PoW)**, d'une **API REST Flask**, d'un **réseau pair-à-pair (P2P) multi-nœuds** conteneurisé sous **Docker**, et d'un **Dashboard Web interactif (Blockchain Explorer)**.
@@ -26,7 +26,7 @@ blockchain/
 ├── demo.py              # Script automatisé validant les 5 preuves exigées par le sujet
 ├── requirements.txt     # Dépendances Python (Flask, requests)
 ├── Dockerfile           # Image Docker d'un nœud Blockchain
-├── docker-compose.yml   # Déploiement multi-nœuds (3 PC : pc-alice, pc-bob, pc-charlie)
+├── docker-compose.yml   # Déploiement multi-nœuds (3 PC : pc-hugo, pc-enzo, pc-louis)
 ├── templates/
 │   └── index.html       # Interface du Dashboard Web (Blockchain Explorer)
 └── static/
@@ -67,16 +67,16 @@ Nous avons retenu et implémenté l'algorithme **Proof of Work (PoW)** avec une 
 
 ### Option A — Réseau Multi-PC avec Docker Compose (Recommandé)
 
-Le fichier `docker-compose.yml` lance **3 nœuds isolés** (`pc-alice`, `pc-bob`, `pc-charlie`) interconnectés sur un réseau virtuel Docker `blockchain-net` :
+Le fichier `docker-compose.yml` lance **3 nœuds isolés** (`pc-hugo`, `pc-enzo`, `pc-louis`) interconnectés sur un réseau virtuel Docker `blockchain-net` :
 
 ```bash
 docker compose up -d --build
 ```
 
 Ouvrez ensuite les 3 nœuds dans votre navigateur :
-* 💻 **PC d'Alice (`pc-alice`)** : [http://localhost:5001](http://localhost:5001)
-* 💻 **PC de Bob (`pc-bob`)** : [http://localhost:5002](http://localhost:5002)
-* 💻 **PC de Charlie (`pc-charlie`)** : [http://localhost:5003](http://localhost:5003)
+* 💻 **PC de Hugo (`pc-hugo`)** : [http://localhost:5001](http://localhost:5001)
+* 💻 **PC d'Enzo (`pc-enzo`)** : [http://localhost:5002](http://localhost:5002)
+* 💻 **PC de Louis (`pc-louis`)** : [http://localhost:5003](http://localhost:5003)
 
 Pour arrêter les conteneurs :
 ```bash
@@ -116,13 +116,13 @@ Le script `demo.py` exécute et vérifie automatiquement les **5 preuves demand�
 1. **Création d'un bloc et vérification du chaînage** :
    Cliquez sur **Miner un bloc**. Le **Bloc #1** apparaît : sa ligne `PRÉC` est strictement identique au `HASH` du **Bloc #0 (Genesis)**.
 2. **Ajout de transactions puis minage d'un bloc les contenant** :
-   Sélectionnez un émetteur (`pc-alice`) et un destinataire du réseau (`pc-bob`), indiquez un montant et cliquez sur **Envoyer sur le réseau**. La transaction apparaît dans la *Mempool* de tous les PC connectés. Cliquez sur **Miner un bloc** : la transaction est inscrite dans le bloc et les **Soldes actifs** sont mis à jour.
+   Sélectionnez un émetteur (`pc-hugo`) et un destinataire du réseau (`pc-enzo` ou `pc-louis`), indiquez un montant et cliquez sur **Envoyer sur le réseau**. La transaction apparaît dans la *Mempool* de tous les PC connectés. Cliquez sur **Miner un bloc** : la transaction est inscrite dans le bloc et les **Soldes actifs** sont mis à jour.
 3. **Détection d'une chaîne falsifiée (bloc modifié → chaîne invalide)** :
    Cliquez sur le bouton **« Falsifier un bloc »** (qui modifie le montant d'une transaction dans un bloc existant). Le bloc falsifié passe en rouge et le statut du nœud affiche immédiatement **« Chaîne Altérée »**. Cliquez sur **« Restaurer »** pour rétablir l'intégrité.
 4. **Validité du consensus (bloc au consensus invalide rejeté)** :
    Cliquez sur **« Bloc PoW invalide »** (qui soumet un bloc avec `nonce = 0` ne respectant pas le préfixe `0000`). Le serveur rejette le bloc et affiche le motif du refus.
 5. **Résolution de conflits (deux nœuds en désaccord convergent)** :
-   Sur `pc-alice` (`5001`), décochez *« Diffuser le bloc miné aux autres PC »* et minez 2 blocs. `pc-alice` possède désormais une chaîne plus longue que `pc-bob` (`5002`). Sur `pc-bob`, cliquez sur **« Synchroniser (Résoudre conflits) »** : `pc-bob` adopte la chaîne valide la plus longue de `pc-alice`.
+   Sur `pc-hugo` (`5001`), décochez *« Diffuser le bloc miné aux autres PC »* et minez 2 blocs. `pc-hugo` possède désormais une chaîne plus longue que `pc-enzo` (`5002`). Sur `pc-enzo`, cliquez sur **« Synchroniser (Résoudre conflits) »** : `pc-enzo` adopte la chaîne valide la plus longue de `pc-hugo`.
 
 ---
 
